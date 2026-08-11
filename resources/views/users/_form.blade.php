@@ -75,11 +75,11 @@
     }
     .btn-pink-outline {
         background-color: transparent;
-        border: 1px solid #d63384;
-        color: #d63384;
+        border: 1px solid #f394c0;
+        color: #f394c0;
     }
     .btn-pink-outline:hover {
-        background-color: #d63384;
+        background-color: #f394c0;
         color: #fff;
     }
 </style>
