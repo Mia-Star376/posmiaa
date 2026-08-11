@@ -8,7 +8,7 @@
 
     <div class="container-fluid py-4 px-4">
 
-        <h4 class="mb-5 text-center">Halaman Users</h4>
+        <h4 class="mb-5 text-center">Users</h4>
 
         <div class="border rounded p-4 bg-white">
 

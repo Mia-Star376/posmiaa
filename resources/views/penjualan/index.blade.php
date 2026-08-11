@@ -8,7 +8,7 @@
 
     <div class="container-fluid py-4 px-4">
 
-        <h4 class="mb-5 text-center">Halaman Penjualan</h4>
+        <h4 class="mb-5 text-center">Penjualan</h4>
 
         @if(session('errors'))
             <div class="alert alert-danger">

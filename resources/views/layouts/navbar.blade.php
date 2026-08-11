@@ -9,9 +9,11 @@
         <li class="nav-item">
           <a class="nav-link {{ Request::is('dashboard') ? 'active fw-semibold' : '' }}" aria-current="page" href="{{ route('dashboard') }}" style="{{ Request::is('dashboard') ? 'color: #d94f83;' : '' }}">Dashboard</a>
         </li>
+        @if(auth()->user()->role_id === 1)
         <li class="nav-item">
           <a class="nav-link {{ Request::is('admin/users') ? 'active fw-semibold' : '' }}" href="{{ route('admin.users') }}" style="{{ Request::is('admin/users') ? 'color: #d94f83;' : '' }}">Users</a>
         </li>
+        @endif
         <li class="nav-item">
           <a class="nav-link {{ Request::is('produk') ? 'active fw-semibold' : '' }}" href="{{ route('produk.index') }}" style="{{ Request::is('produk') ? 'color: #d94f83;' : '' }}">Produk</a>
         </li>
