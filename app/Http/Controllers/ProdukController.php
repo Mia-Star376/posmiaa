@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\QueryException;
 use App\Http\Requests\Produk\StoreRequest;
 use App\Http\Requests\Produk\UpdateRequest;
 use App\Http\Requests\SearchRequest;
@@ -120,19 +121,32 @@ class ProdukController extends Controller
         return redirect()->route('produk.edit', $produk->id)->with('success', 'Product updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+   
     public function destroy(Produk $produk)
-    {
-        $this->authorize('delete', $produk);
+{
+    $this->authorize('delete', $produk);
 
-        if ($produk->foto) {
-            Storage::disk('public')->delete($produk->foto);
-        }
+    try {
+        
+        $foto = $produk->foto;
 
+        
         $produk->delete();
 
-        return redirect()->route('produk.index')->with('success', 'Product deleted successfully.');
+        
+        if ($foto && Storage::disk('public')->exists($foto)) {
+            Storage::disk('public')->delete($foto);
+        }
+
+        return redirect()
+            ->route('produk.index')
+            ->with('success', 'Product deleted successfully.');
+
+    } catch (QueryException $e) {
+
+        return redirect()
+            ->route('produk.index')
+            ->with('error', 'Produk tidak dapat dihapus karena sudah digunakan dalam transaksi penjualan.');
     }
+}
 }
