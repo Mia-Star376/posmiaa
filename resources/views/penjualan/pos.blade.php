@@ -86,12 +86,7 @@
                                     <td>{{ $item->produk->nama }}</td>
                                     <td>Rp.{{ number_format($item->produk->harga_jual) }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('itempenjualan.update', $item->id) }}">
-                                            @csrf @method('PUT')
-                                            <input type="number" name="quantity"
-                                                   value="{{ $item->kuantitas }}"
-                                                   class="form-control form-control-sm">
-                                        </form>
+                                        {{ $item->kuantitas }}
                                     </td>
                                     <td>Rp. {{ number_format($item->subtotal) }}</td>
                                     <td class="text-center">
