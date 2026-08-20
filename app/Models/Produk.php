@@ -15,6 +15,7 @@ class Produk extends Model
         'user_id',
         'foto',
         'nama',
+        'jenis_id',
         'harga_beli',
         'harga_jual',
         'stok',
@@ -28,6 +29,11 @@ class Produk extends Model
     public function itemPenjualan()
     {
         return $this->hasMany(ItemPenjualan::class, 'produk_id');
+    }
+    
+     public function jenis()
+    {
+        return $this->belongsTo(Jenis::class);
     }
 
 }

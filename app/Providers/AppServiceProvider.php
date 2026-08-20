@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         User::class     => DashboardPolicy::class,
         Produk::class   => ProdukPolicy::class,
+        Jenis::class => JenisPolicy::class,
         Penjualan::class => PenjualanPolicy::class,
         ItemPenjualan::class => ItemPenjualanPolicy::class
     ];

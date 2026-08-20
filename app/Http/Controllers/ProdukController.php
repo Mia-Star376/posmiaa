@@ -7,6 +7,7 @@ use App\Http\Requests\Produk\StoreRequest;
 use App\Http\Requests\Produk\UpdateRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Produk;
+use App\Models\Jenis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -23,14 +24,15 @@ class ProdukController extends Controller
         $keyword = $request->input('search');
 
         if ($keyword) {
-            $products = Produk::when($keyword, function ($query) use ($keyword) {
+            $products = Produk::with('jenis')
+            ->when($keyword, function ($query) use ($keyword) {
                 $query->where('nama', 'like', '%' . $keyword . '%');
             })
             ->orderBy('nama')
             ->paginate(10)
             ->withQueryString();
         } else {
-            $products = Produk::latest()->paginate(10)->withQueryString();
+            $products = Produk::with('jenis')->latest()->paginate(10)->withQueryString();
         }
 
         return view('produk.index', compact('products'));
@@ -43,7 +45,9 @@ class ProdukController extends Controller
     {
         $this->authorize('create', Produk::class);
 
-        return view('produk.create');
+        $jenis = Jenis::orderBy('nama_jenis')->get();
+
+        return view('produk.create', compact('jenis'));
     }
 
     /**
@@ -60,6 +64,7 @@ class ProdukController extends Controller
         $data['harga_beli'] = $dataReq['purchase_price'];
         $data['harga_jual'] = $dataReq['selling_price'];
         $data['stok'] = $dataReq['stock'] ?? true;
+        $data['jenis_id'] = $dataReq['jenis_id'];
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('products', 'public');
@@ -85,7 +90,9 @@ class ProdukController extends Controller
     {
         $this->authorize('update', $produk);
 
-        return view('produk.edit', compact('produk'));
+        $jenis = Jenis::orderBy('nama_jenis')->get();
+
+        return view('produk.edit', compact('produk', 'jenis'));
     }
 
     /**
@@ -103,6 +110,7 @@ class ProdukController extends Controller
             'harga_beli' => $dataReq['purchase_price'],
             'harga_jual' => $dataReq['selling_price'],
             'stok' => $dataReq['stock'],
+            'jenis_id' => $dataReq['jenis_id'],
         ];
 
         if ($request->hasFile('foto')) {

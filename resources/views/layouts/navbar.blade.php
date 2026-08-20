@@ -15,6 +15,9 @@
         </li>
         @endif
         <li class="nav-item">
+          <a class="nav-link {{ Request::is('jenis') ? 'active fw-semibold' : '' }}" href="{{ route('jenis.index') }}" style="{{ Request::is('jenis') ? 'color: #d94f83;' : '' }}">Jenis</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {{ Request::is('produk') ? 'active fw-semibold' : '' }}" href="{{ route('produk.index') }}" style="{{ Request::is('produk') ? 'color: #d94f83;' : '' }}">Produk</a>
         </li>
         <li class="nav-item">

@@ -27,6 +27,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'purchase_price' => 'required|integer|min:0',
             'selling_price' => 'required|integer|min:0',
+            'jenis_id' => 'required|exists:jenis,id',
             'stock' => 'required|integer|min:0',
         ];
     }
@@ -45,6 +46,8 @@ class StoreRequest extends FormRequest
             'selling_price.integer' => 'selling price harus berupa angka.',
             'stock.required' => 'Stok wajib diisi.',
             'stock.integer' => 'Stok harus berupa angka.',
+            'jenis_id.required' => 'Jenis produk wajib dipilih.',
+            'jenis_id.exists' => 'Jenis produk tidak valid.',
         ];
     }
 }
