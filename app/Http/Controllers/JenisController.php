@@ -13,9 +13,9 @@ class JenisController extends Controller
         $keyword = $request->input('search');
 
         $jenis = Jenis::when($keyword, function ($query) use ($keyword) {
-            $query->where('nama_jenis', 'like', '%' . $keyword . '%');
-        })
-        ->latest()
+        $query->where('nama_jenis', 'like', '%' . $keyword . '%');
+    })
+        ->oldest()
         ->paginate(10)
         ->withQueryString();
 
@@ -29,10 +29,15 @@ class JenisController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_jenis' => 'required|string|max:100']);
-        Jenis::create($request->only('nama_jenis'));
-        return redirect()->route('jenis.index')->with('success', 'Jenis berhasil ditambahkan');
-    }
+    $request->validate(['nama_jenis' => 'required|string|max:100']);
+
+    Jenis::create([
+        'nama_jenis' => $request->nama_jenis,
+        'user_id' => auth()->id(),
+    ]);
+
+    return redirect()->route('jenis.index')->with('success', 'Jenis berhasil ditambahkan');
+}
 
     public function edit(Jenis $jenis)
     {
