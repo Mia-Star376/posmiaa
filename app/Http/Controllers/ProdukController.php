@@ -17,26 +17,26 @@ class ProdukController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(SearchRequest $request)
-    {
-        $this->authorize('viewAny', Produk::class);
+   public function index(SearchRequest $request)
+{
+    $this->authorize('viewAny', Produk::class);
 
-        $keyword = $request->input('search');
+    $keyword = $request->input('search');
 
-        if ($keyword) {
-            $products = Produk::with('jenis')
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->where('nama', 'like', '%' . $keyword . '%');
-            })
-            ->orderBy('nama')
-            ->paginate(10)
-            ->withQueryString();
-        } else {
-            $products = Produk::with('jenis')->latest()->paginate(10)->withQueryString();
-        }
-
-        return view('produk.index', compact('products'));
+    if ($keyword) {
+        $products = Produk::with('jenis')
+        ->when($keyword, function ($query) use ($keyword) {
+            $query->where('nama', 'like', '%' . $keyword . '%');
+        })
+        ->orderBy('nama')
+        ->paginate(10)
+        ->withQueryString();
+    } else {
+        $products = Produk::with('jenis')->oldest()->paginate(10)->withQueryString();
     }
+
+    return view('produk.index', compact('products'));
+}
 
     /**
      * Show the form for creating a new resource.

@@ -15,26 +15,26 @@ class PenjualanController extends Controller
      * Display a listing of the resource.
      */
     public function index(SearchRequest $request)
-    {
-        $user = Auth::user();
-        $keyword = $request->input('search');
+{
+    $user = Auth::user();
+    $keyword = $request->input('search');
 
-        $sales = Penjualan::query()
+    $sales = Penjualan::query()
 
-        ->when($user->role->name === 'kasir', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-        ->when($keyword, function($query) use ($keyword) {
-            $query->whereHas('user', function ($q) use ($keyword) {
-                $q->where('name', 'like', '%' . $keyword . '%');
-            });
-        })
-        ->latest()
-        ->paginate(10)
-        ->withQueryString();
+    ->when($user->role->name === 'kasir', function ($query) use ($user) {
+        $query->where('user_id', $user->id);
+    })
+    ->when($keyword, function($query) use ($keyword) {
+        $query->whereHas('user', function ($q) use ($keyword) {
+            $q->where('name', 'like', '%' . $keyword . '%');
+        });
+    })
+    ->oldest()
+    ->paginate(10)
+    ->withQueryString();
 
-        return view('penjualan.index', compact('sales'));
-    }
+    return view('penjualan.index', compact('sales'));
+}
 
     /**
      * Show the form for creating a new resource.

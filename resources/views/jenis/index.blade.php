@@ -10,12 +10,7 @@
 
     <h2 class="text-center fw-bold mb-4">Jenis</h2>
 
-    @if(session('success'))
-        <div class="alert" style="background-color: #ffe3ee; border-color: #ff8fb3; color: #d63384;">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    
 
     <div class="bg-white rounded p-4 shadow-sm">
 
