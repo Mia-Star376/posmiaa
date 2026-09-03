@@ -4,7 +4,7 @@
     <div class="row justify-content-center mt-5 pt-5">
         <div class="col-lg-10">
 
-            <h4 class="mb-4 text-center">Tambah Produk</h4>
+            <h4 class="mb-4 text-center">{{ isset($produk) ? 'Edit Produk' : 'Tambah Produk' }}</h4>
 
             <div class="border rounded p-5 bg-white">
 

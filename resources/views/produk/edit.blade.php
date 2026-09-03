@@ -3,7 +3,7 @@
 @section('title', 'Edit Produk')
 
 @section('content')
-<h4>Edit Produk</h4>
+
 
 <form action="{{ route('produk.update', $produk) }}"
       method="POST"
