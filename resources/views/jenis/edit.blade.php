@@ -6,7 +6,7 @@
 
 @include('layouts.navbar')
 
-<div class="container-fluid py-5 px-4" style="background-color: #fff5f8; min-height: 100vh;">
+
     <div class="row justify-content-center">
         <div class="col-lg-6">
 
@@ -19,7 +19,6 @@
                 </form>
             </div>
 
-        </div>
     </div>
 </div>
 

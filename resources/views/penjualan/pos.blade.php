@@ -4,6 +4,8 @@
 
 @section('content')
 
+@include('layouts.navbar')
+
     <div class="container-fluid py-4 px-4">
 
         @if (session('errors'))

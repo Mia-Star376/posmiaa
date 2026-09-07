@@ -92,69 +92,70 @@
     </div>
 
     <div id="modalDetail" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1050;">
-        <div style="background:#fff; border-radius:14px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+    <div style="background:#fffdf8; border-radius:4px; padding:0; width:300px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); font-family:'Courier New', Consolas, monospace;">
 
-            <div style="background:#ff8fb3; padding:16px 20px;">
-                <div style="color:#fff; font-size:12px; opacity:.9;">DETAIL TRANSAKSI</div>
-                <div style="color:#fff; font-size:18px; font-weight:700;"><span id="dId"></span></div>
-            </div>
-
-            <div style="padding:18px 20px;">
-                <table style="width:100%; font-size:14px; border-collapse:collapse;">
-                    <tr>
-                        <td style="color:#999; padding:5px 0;">Tanggal</td>
-                        <td style="text-align:right; font-weight:600; color:#333; padding:5px 0;" id="dTanggal"></td>
-                    </tr>
-                    <tr>
-                        <td style="color:#999; padding:5px 0;">Kasir</td>
-                        <td style="text-align:right; font-weight:600; color:#333; padding:5px 0;" id="dKasir"></td>
-                    </tr>
-                    <tr>
-                        <td style="color:#999; padding:5px 0;">Metode</td>
-                        <td style="text-align:right; font-weight:600; color:#333; padding:5px 0;" id="dMetode"></td>
-                    </tr>
-                    <tr>
-                        <td style="color:#999; padding:5px 0;">Status</td>
-                        <td style="text-align:right; padding:5px 0;">
-                            <span id="dStatus" style="font-size:12px; font-weight:700; padding:3px 10px; border-radius:12px;"></span>
-                        </td>
-                    </tr>
-                </table>
-
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:14px; border-top:1px solid #f0f0f0;">
-                    <span style="color:#666; font-size:14px; font-weight:600;">Total</span>
-                    <span style="color:#db648a; font-size:17px; font-weight:800;">Rp<span id="dTotal"></span></span>
-                </div>
-            </div>
-
-            <div style="padding:14px 20px 20px;">
-                <button onclick="document.getElementById('modalDetail').style.display='none'" style="width:100%; background:#ff8fb3; border:none; color:#fff; padding:9px; border-radius:8px; font-weight:600; cursor:pointer;">Tutup</button>
-            </div>
-
+        <div style="padding:20px 20px 4px; text-align:center;">
+            <div style="font-size:15px; font-weight:700; letter-spacing:2px; color:#2a2a2a;">POINT OF SALE</div>
+            <div style="font-size:11px; color:#d4537e; letter-spacing:1px; margin-top:4px;">TRX #<span id="dId"></span></div>
+            <span id="dStatus" style="display:inline-block; margin-top:10px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:3px; letter-spacing:1px;"></span>
         </div>
+
+        <div style="padding:14px 20px 0;">
+            <hr style="border:none; border-top:1.5px dashed #f0b8cc; margin:10px 0;">
+
+            <table style="width:100%; font-size:12.5px; border-collapse:collapse;">
+                <tr>
+                    <td style="color:#999; padding:4px 0;">Tanggal</td>
+                    <td style="text-align:right; font-weight:700; color:#2a2a2a; padding:4px 0;" id="dTanggal"></td>
+                </tr>
+                <tr>
+                    <td style="color:#999; padding:4px 0;">Kasir</td>
+                    <td style="text-align:right; font-weight:700; color:#2a2a2a; padding:4px 0;" id="dKasir"></td>
+                </tr>
+                <tr>
+                    <td style="color:#999; padding:4px 0;">Metode</td>
+                    <td style="text-align:right; font-weight:700; color:#2a2a2a; padding:4px 0;" id="dMetode"></td>
+                </tr>
+            </table>
+
+            <hr style="border:none; border-top:1.5px dashed #f0b8cc; margin:10px 0;">
+
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px;">
+                <span style="color:#993556; font-size:13px; font-weight:700; letter-spacing:1px;">TOTAL</span>
+                <span style="color:#d4537e; font-size:20px; font-weight:800;">Rp<span id="dTotal"></span></span>
+            </div>
+        </div>
+
+        <div style="padding:0 20px 20px;">
+            <button onclick="document.getElementById('modalDetail').style.display='none'" style="width:100%; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:4px; font-family:inherit; font-size:13px; font-weight:700; letter-spacing:1px; cursor:pointer;">TUTUP</button>
+        </div>
+
     </div>
+</div>
 
-    <script>
-        function tampilkanDetail(id, tanggal, kasir, total, metode, status) {
-            document.getElementById('dId').innerText = id;
-            document.getElementById('dTanggal').innerText = tanggal;
-            document.getElementById('dKasir').innerText = kasir;
-            document.getElementById('dTotal').innerText = total;
-            document.getElementById('dMetode').innerText = metode;
+<script>
+    function tampilkanDetail(id, tanggal, kasir, total, metode, status) {
+        document.getElementById('dId').innerText = id;
+        document.getElementById('dTanggal').innerText = tanggal;
+        document.getElementById('dKasir').innerText = kasir;
+        document.getElementById('dTotal').innerText = total;
+        document.getElementById('dMetode').innerText = metode;
 
-            const statusEl = document.getElementById('dStatus');
-            statusEl.innerText = status;
-            if (status === 'COMPLETED') {
-                statusEl.style.background = '#e3f9e5';
-                statusEl.style.color = '#1f9d55';
-            } else {
-                statusEl.style.background = '#fff3cd';
-                statusEl.style.color = '#b8860b';
-            }
-
-            document.getElementById('modalDetail').style.display = 'flex';
-            return false;
+        const statusEl = document.getElementById('dStatus');
+        statusEl.innerText = status;
+        if (status === 'COMPLETED') {
+            statusEl.style.background = '#e3f9e5';
+            statusEl.style.color = '#1f9d55';
+            statusEl.style.border = '1px solid #1f9d55';
+        } else {
+            statusEl.style.background = '#fdf3dc';
+            statusEl.style.color = '#a67a12';
+            statusEl.style.border = '1px solid #a67a12';
         }
-    </script>
+
+        document.getElementById('modalDetail').style.display = 'flex';
+        return false;
+    }
+</script>
 
 @endsection

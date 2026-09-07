@@ -6,9 +6,9 @@
 
 @include('layouts.navbar')
 
-<div class="container-fluid py-5 px-4" style="background-color: #fff5f8; min-height: 100vh;">
 
     <h2 class="text-center fw-bold mb-4">Jenis</h2>
+    
 
     
 
@@ -74,7 +74,6 @@
         </div>
 
     </div>
-</div>
 
 <style>
     .btn-pink {

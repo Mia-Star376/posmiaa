@@ -4,6 +4,8 @@
 
 @section('content')
 
+@include('layouts.navbar')
+
 
 <form action="{{ route('produk.update', $produk) }}"
       method="POST"
