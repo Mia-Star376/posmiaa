@@ -10,11 +10,6 @@
 
         <h4 class="mb-5 text-center">Penjualan</h4>
 
-        @if(session('errors'))
-            <div class="alert alert-danger">
-                {{ session('errors') }}
-            </div>
-        @endif
 
         <div class="border rounded p-4 bg-white">
 
@@ -57,7 +52,17 @@
                             <td>{{ $sale->metode_pembayaran }}</td>
                             <td>{{ $sale->status }}</td>
                             <td class="text-center">
-                                <a href="#" class="btn btn-sm" style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;" onclick="return tampilkanDetail('{{ $sale->id }}', '{{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}', '{{ $sale->user->name }}', '{{ number_format($sale->total_pembayaran) }}', '{{ $sale->metode_pembayaran }}', '{{ $sale->status }}')">Detail</a>
+                                <a href="#" class="btn btn-sm" style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;"
+                                   onclick="return tampilkanDetail(
+                                       '{{ $sale->id }}',
+                                       '{{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}',
+                                       '{{ $sale->user->name }}',
+                                       '{{ number_format($sale->total_pembayaran) }}',
+                                       '{{ $sale->metode_pembayaran }}',
+                                       '{{ $sale->status }}',
+                                       '{{ number_format($sale->uang_diterima ?? 0) }}',
+                                       '{{ number_format($sale->kembalian ?? 0) }}'
+                                   )">Detail</a>
                                 @can('view', $sale)
                                 <a href="{{ route('penjualan.edit', $sale) }}" class="btn btn-sm" style="background-color: #db648a; border-color: #db648a; color: #fff;">Edit</a>
                                 @endcan
@@ -118,6 +123,24 @@
                 </tr>
             </table>
 
+            <!-- Box QRIS -->
+            <div id="dQrisBox" style="display:none; text-align:center; margin-top:12px;">
+                <img id="dQrisImg" src="" alt="QRIS" style="width:120px; height:120px; border:1px solid #f0b8cc; padding:6px; border-radius:4px;">
+                <div style="font-size:10px; color:#999; letter-spacing:1px; margin-top:4px;">SCAN QRIS</div>
+            </div>
+
+            <!-- Box Cash -->
+            <div id="dCashBox" style="display:none; margin-top:12px; background:#fbeef3; border-radius:4px; padding:10px 12px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#666;">
+                    <span>Uang Diterima</span>
+                    <span id="dUangDiterima" style="font-weight:700; color:#2a2a2a;"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-top:4px;">
+                    <span>Kembalian</span>
+                    <span id="dKembalian" style="font-weight:700; color:#d4537e;"></span>
+                </div>
+            </div>
+
             <hr style="border:none; border-top:1.5px dashed #f0b8cc; margin:10px 0;">
 
             <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px;">
@@ -134,7 +157,7 @@
 </div>
 
 <script>
-    function tampilkanDetail(id, tanggal, kasir, total, metode, status) {
+    function tampilkanDetail(id, tanggal, kasir, total, metode, status, uangDiterima, kembalian) {
         document.getElementById('dId').innerText = id;
         document.getElementById('dTanggal').innerText = tanggal;
         document.getElementById('dKasir').innerText = kasir;
@@ -151,6 +174,22 @@
             statusEl.style.background = '#fdf3dc';
             statusEl.style.color = '#a67a12';
             statusEl.style.border = '1px solid #a67a12';
+        }
+
+        const qrisBox = document.getElementById('dQrisBox');
+        const cashBox = document.getElementById('dCashBox');
+        qrisBox.style.display = 'none';
+        cashBox.style.display = 'none';
+
+        if (metode === 'QRIS') {
+            const isiQr = 'TRX-' + id + '|' + total;
+            document.getElementById('dQrisImg').src =
+                'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(isiQr);
+            qrisBox.style.display = 'block';
+        } else if (metode === 'CASH') {
+            document.getElementById('dUangDiterima').innerText = 'Rp ' + uangDiterima;
+            document.getElementById('dKembalian').innerText = 'Rp ' + kembalian;
+            cashBox.style.display = 'block';
         }
 
         document.getElementById('modalDetail').style.display = 'flex';

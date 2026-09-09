@@ -115,14 +115,41 @@
 
                     <form method="POST"
                           action="{{ route('penjualan.update', $sale->id) }}"
-                          onsubmit="return confirm('Yakin ingin checkout?')" class="mb-2">
+                          onsubmit="return sebelumCheckout(event)" class="mb-2">
                         @csrf
                         @method('PUT')
-                        <select name="payment_method" class="form-select mb-2">
+
+                        <select name="payment_method" id="paymentMethod" class="form-select mb-2" onchange="toggleMetode()">
                             <option value="">Pilih Pembayaran</option>
                             <option value="CASH">Cash</option>
                             <option value="QRIS">QRIS</option>
                         </select>
+
+                        {{-- Box Cash --}}
+                        <div id="cashBox" style="display:none; background:#fff; border:1px solid #ffc2d6; border-radius:8px; padding:14px; margin-bottom:12px;">
+                            <label style="font-size:13px; color:#666; display:block; margin-bottom:6px;">Uang Diterima</label>
+                            <input type="number" name="uang_diterima" id="uangDiterima" oninput="hitungKembalian()" placeholder="0"
+                                   class="form-control mb-2">
+
+                            <div class="d-flex justify-content-between" style="font-size:14px; color:#666;">
+                                <span>Total Belanja</span>
+                                <span>Rp {{ number_format($sale->total_pembayaran) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between" style="font-size:16px; font-weight:700; color:#d4537e; margin-top:6px;">
+                                <span>Kembalian</span>
+                                <span id="kembalianLabel">Rp 0</span>
+                            </div>
+                            <div id="kurangWarning" style="display:none; color:#a12f2f; font-size:12px; margin-top:6px;">Uang belum cukup</div>
+                        </div>
+
+                        {{-- Box QRIS --}}
+                        <div id="qrisBox" style="display:none; text-align:center; background:#fff; border:1px solid #ffc2d6; border-radius:8px; padding:16px; margin-bottom:12px;">
+                            <img id="qrisImg" src="" alt="QRIS" style="width:150px; height:150px;">
+                            <div style="font-size:12px; color:#999; margin-top:6px; letter-spacing:1px;">SCAN UNTUK BAYAR</div>
+                            <div style="font-size:16px; font-weight:700; color:#d4537e; margin-top:4px;">
+                                Rp {{ number_format($sale->total_pembayaran) }}
+                            </div>
+                        </div>
 
                         <button style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;" class="btn btn-success w-100 {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}">
                             Checkout
@@ -168,5 +195,61 @@
         box-shadow: none !important;
     }
 </style>
+
+<script>
+    const totalBelanja = {{ $sale->total_pembayaran }};
+
+    function toggleMetode() {
+        const metode = document.getElementById('paymentMethod').value;
+        document.getElementById('cashBox').style.display = 'none';
+        document.getElementById('qrisBox').style.display = 'none';
+
+        if (metode === 'CASH') {
+            document.getElementById('uangDiterima').value = '';
+            document.getElementById('kembalianLabel').innerText = 'Rp 0';
+            document.getElementById('cashBox').style.display = 'block';
+        } else if (metode === 'QRIS') {
+            document.getElementById('qrisImg').src =
+                'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent('TOTAL:' + totalBelanja);
+            document.getElementById('qrisBox').style.display = 'block';
+        }
+    }
+
+    function hitungKembalian() {
+        const diterima = parseFloat(document.getElementById('uangDiterima').value) || 0;
+        const kembalian = diterima - totalBelanja;
+        const label = document.getElementById('kembalianLabel');
+        const warning = document.getElementById('kurangWarning');
+
+        if (kembalian < 0) {
+            label.innerText = 'Rp 0';
+            warning.style.display = 'block';
+        } else {
+            label.innerText = 'Rp ' + kembalian.toLocaleString('id-ID');
+            warning.style.display = 'none';
+        }
+    }
+
+    function sebelumCheckout(e) {
+        const metode = document.getElementById('paymentMethod').value;
+
+        if (!metode) {
+            alert('Pilih metode pembayaran dulu');
+            e.preventDefault();
+            return false;
+        }
+
+        if (metode === 'CASH') {
+            const diterima = parseFloat(document.getElementById('uangDiterima').value) || 0;
+            if (diterima < totalBelanja) {
+                alert('Uang diterima kurang dari total belanja');
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        return confirm('Yakin ingin checkout?');
+    }
+</script>
 
 @endsection
