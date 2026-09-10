@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               12.3.3-MariaDB - MariaDB Server
+-- Server version:               8.0.30 - MySQL Community Server - GPL
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.8.0.6908
+-- HeidiSQL Version:             12.1.0.6537
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,14 +16,14 @@
 
 
 -- Dumping database structure for posmia
-CREATE DATABASE IF NOT EXISTS `posmia` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
+CREATE DATABASE IF NOT EXISTS `posmia` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `posmia`;
 
 -- Dumping structure for table posmia.cache
 CREATE TABLE IF NOT EXISTS `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumtext NOT NULL,
-  `expiration` int(11) NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS `cache` (
 
 -- Dumping structure for table posmia.cache_locks
 CREATE TABLE IF NOT EXISTS `cache_locks` (
-  `key` varchar(255) NOT NULL,
-  `owner` varchar(255) NOT NULL,
-  `expiration` int(11) NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS `cache_locks` (
 
 -- Dumping structure for table posmia.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -56,12 +56,12 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 
 -- Dumping structure for table posmia.item_penjualan
 CREATE TABLE IF NOT EXISTS `item_penjualan` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `penjualan_id` bigint(20) unsigned NOT NULL,
-  `produk_id` bigint(20) unsigned NOT NULL,
-  `kuantitas` int(11) NOT NULL,
-  `harga_satuan` int(11) NOT NULL,
-  `subtotal` int(11) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `penjualan_id` bigint unsigned NOT NULL,
+  `produk_id` bigint unsigned NOT NULL,
+  `kuantitas` int NOT NULL,
+  `harga_satuan` int NOT NULL,
+  `subtotal` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -69,17 +69,22 @@ CREATE TABLE IF NOT EXISTS `item_penjualan` (
   KEY `item_penjualan_produk_id_foreign` (`produk_id`),
   CONSTRAINT `item_penjualan_penjualan_id_foreign` FOREIGN KEY (`penjualan_id`) REFERENCES `penjualan` (`id`),
   CONSTRAINT `item_penjualan_produk_id_foreign` FOREIGN KEY (`produk_id`) REFERENCES `produk` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table posmia.item_penjualan: ~1 rows (approximately)
+-- Dumping data for table posmia.item_penjualan: ~6 rows (approximately)
 INSERT INTO `item_penjualan` (`id`, `penjualan_id`, `produk_id`, `kuantitas`, `harga_satuan`, `subtotal`, `created_at`, `updated_at`) VALUES
-	(1, 1, 1, 2, 12344556, 24689112, '2026-08-31 07:10:05', '2026-08-31 07:10:07');
+	(1, 1, 1, 2, 12344556, 24689112, '2026-08-31 07:10:05', '2026-08-31 07:10:07'),
+	(3, 4, 9, 1, 7000000, 7000000, '2026-09-09 02:36:50', '2026-09-09 02:36:50'),
+	(4, 5, 9, 1, 7000000, 7000000, '2026-09-09 02:55:23', '2026-09-09 02:55:23'),
+	(5, 6, 9, 1, 7000000, 7000000, '2026-09-09 03:01:54', '2026-09-09 03:01:54'),
+	(6, 6, 10, 1, 55000000, 55000000, '2026-09-09 03:01:55', '2026-09-09 03:01:55'),
+	(7, 7, 10, 1, 55000000, 55000000, '2026-09-09 03:04:21', '2026-09-09 03:04:21');
 
 -- Dumping structure for table posmia.jenis
 CREATE TABLE IF NOT EXISTS `jenis` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) unsigned NOT NULL,
-  `nama_jenis` varchar(255) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `nama_jenis` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -97,13 +102,13 @@ INSERT INTO `jenis` (`id`, `user_id`, `nama_jenis`, `created_at`, `updated_at`) 
 
 -- Dumping structure for table posmia.jobs
 CREATE TABLE IF NOT EXISTS `jobs` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `queue` varchar(255) NOT NULL,
-  `payload` longtext NOT NULL,
-  `attempts` tinyint(3) unsigned NOT NULL,
-  `reserved_at` int(10) unsigned DEFAULT NULL,
-  `available_at` int(10) unsigned NOT NULL,
-  `created_at` int(10) unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint unsigned NOT NULL,
+  `reserved_at` int unsigned DEFAULT NULL,
+  `available_at` int unsigned NOT NULL,
+  `created_at` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_queue_index` (`queue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -112,16 +117,16 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 
 -- Dumping structure for table posmia.job_batches
 CREATE TABLE IF NOT EXISTS `job_batches` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `total_jobs` int(11) NOT NULL,
-  `pending_jobs` int(11) NOT NULL,
-  `failed_jobs` int(11) NOT NULL,
-  `failed_job_ids` longtext NOT NULL,
-  `options` mediumtext DEFAULT NULL,
-  `cancelled_at` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `finished_at` int(11) DEFAULT NULL,
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -129,11 +134,11 @@ CREATE TABLE IF NOT EXISTS `job_batches` (
 
 -- Dumping structure for table posmia.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table posmia.migrations: ~9 rows (approximately)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -145,12 +150,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(6, '2026_04_20_072227_create_produk_table', 1),
 	(7, '2026_04_20_072927_create_penjualan_table', 1),
 	(8, '2026_04_20_073614_create_item_penjualan_table', 1),
-	(9, '2026_08_21_084356_add_jenis_id_to_produk_table', 1);
+	(9, '2026_08_21_084356_add_jenis_id_to_produk_table', 1),
+	(10, '2026_09_09_094801_add_uang_diterima_kembalian_to_sales_table', 2);
 
 -- Dumping structure for table posmia.password_reset_tokens
 CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -159,32 +165,38 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
 
 -- Dumping structure for table posmia.penjualan
 CREATE TABLE IF NOT EXISTS `penjualan` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) unsigned NOT NULL,
-  `total_pembayaran` int(11) NOT NULL,
-  `metode_pembayaran` varchar(255) NOT NULL,
-  `status` enum('OPEN','COMPLETED') NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `total_pembayaran` int NOT NULL,
+  `metode_pembayaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uang_diterima` bigint unsigned DEFAULT NULL,
+  `kembalian` bigint unsigned DEFAULT NULL,
+  `status` enum('OPEN','COMPLETED') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `penjualan_user_id_foreign` (`user_id`),
   CONSTRAINT `penjualan_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table posmia.penjualan: ~1 rows (approximately)
-INSERT INTO `penjualan` (`id`, `user_id`, `total_pembayaran`, `metode_pembayaran`, `status`, `created_at`, `updated_at`) VALUES
-	(1, 7, 24689112, 'QRIS', 'COMPLETED', '2026-08-31 07:10:03', '2026-08-31 07:10:13');
+-- Dumping data for table posmia.penjualan: ~5 rows (approximately)
+INSERT INTO `penjualan` (`id`, `user_id`, `total_pembayaran`, `metode_pembayaran`, `uang_diterima`, `kembalian`, `status`, `created_at`, `updated_at`) VALUES
+	(1, 7, 24689112, 'QRIS', NULL, NULL, 'COMPLETED', '2026-08-31 07:10:03', '2026-08-31 07:10:13'),
+	(4, 7, 7000000, 'CASH', NULL, NULL, 'COMPLETED', '2026-09-09 02:36:48', '2026-09-09 02:37:03'),
+	(5, 7, 7000000, 'CASH', NULL, NULL, 'COMPLETED', '2026-09-09 02:47:48', '2026-09-09 02:55:34'),
+	(6, 7, 62000000, 'CASH', 70000000, 8000000, 'COMPLETED', '2026-09-09 03:01:53', '2026-09-09 03:02:32'),
+	(7, 10, 55000000, 'CASH', 60000000, 5000000, 'COMPLETED', '2026-09-09 03:04:19', '2026-09-09 03:04:35');
 
 -- Dumping structure for table posmia.produk
 CREATE TABLE IF NOT EXISTS `produk` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) unsigned NOT NULL,
-  `foto` varchar(255) NOT NULL,
-  `nama` varchar(255) NOT NULL,
-  `jenis_id` bigint(20) unsigned DEFAULT NULL,
-  `harga_beli` int(11) NOT NULL,
-  `harga_jual` int(11) NOT NULL,
-  `stok` int(11) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `foto` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis_id` bigint unsigned DEFAULT NULL,
+  `harga_beli` int NOT NULL,
+  `harga_jual` int NOT NULL,
+  `stok` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -205,16 +217,16 @@ INSERT INTO `produk` (`id`, `user_id`, `foto`, `nama`, `jenis_id`, `harga_beli`,
 	(6, 7, 'products/fTVL2lKDdlb8czwSJCOoPL6yRH4ajA0vLo4ACiGS.jpg', 'FAB5 RETRO FRIDGE 38 LITRE PINK', 1, 10000000, 20000000, 1000, '2026-09-01 07:18:42', '2026-09-01 07:18:42'),
 	(7, 7, 'products/zj7eeryyhZ3PDkwaVHKPkR1cbOxO1c77ReCM1KDA.jpg', 'SMEG ELECTRIC JUG KLF03PKUK-PINK', 1, 5000000, 10000000, 1000, '2026-09-01 07:19:48', '2026-09-01 07:19:48'),
 	(8, 7, 'products/EyWJTiU8h79EqYAqQ15U8cMeqYyKYx8430WGRs7v.jpg', 'SMEG Pink Retro Drip Coffee Maker', 1, 11000000, 12000000, 1000, '2026-09-01 07:20:51', '2026-09-01 07:20:51'),
-	(9, 7, 'products/Ku286DFYgDLdGXOLlf6hH8IYegbAnohBdPApqgyc.jpg', 'Adidas Samba OG Lucid Pink Cream', 3, 5000000, 7000000, 1000, '2026-09-01 07:21:55', '2026-09-01 07:21:55'),
-	(10, 7, 'products/9aLeuqRStkKC368CgPKEeMmovwHoNfc1AzkBkERk.jpg', 'Adidas Sneakers', 3, 4000000, 55000000, 1000, '2026-09-01 07:25:13', '2026-09-01 07:25:13'),
+	(9, 7, 'products/Ku286DFYgDLdGXOLlf6hH8IYegbAnohBdPApqgyc.jpg', 'Adidas Samba OG Lucid Pink Cream', 3, 5000000, 7000000, 997, '2026-09-01 07:21:55', '2026-09-09 03:01:54'),
+	(10, 7, 'products/9aLeuqRStkKC368CgPKEeMmovwHoNfc1AzkBkERk.jpg', 'Adidas Sneakers', 3, 4000000, 55000000, 998, '2026-09-01 07:25:13', '2026-09-09 03:04:21'),
 	(12, 7, 'products/x92UUA0D9PCUeGSm9ckTnvCepmuQ5KPeW24CORHL.jpg', 'POREMIZING LIGHT GEL CREAM', 6, 150000, 200000, 1000, '2026-09-03 02:45:43', '2026-09-03 02:45:43'),
 	(13, 7, 'products/7fe0yV75Y6Te4sul9Lxkga1fWiyFlFgeSeWzGOtl.jpg', 'POREMIZING QUICK CLAY STICK MASK', 6, 100000, 150000, 1000, '2026-09-03 02:49:52', '2026-09-03 02:49:52'),
 	(14, 7, 'products/qjTBQ7MP5EeSu6mOQeAZHEu3qojBqry8iyNgR5xJ.jpg', 'POREMIZING FRESH AMPOULE', 6, 200000, 250000, 1000, '2026-09-03 02:52:08', '2026-09-03 02:52:08');
 
 -- Dumping structure for table posmia.roles
 CREATE TABLE IF NOT EXISTS `roles` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -227,12 +239,12 @@ INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 
 -- Dumping structure for table posmia.sessions
 CREATE TABLE IF NOT EXISTS `sessions` (
-  `id` varchar(255) NOT NULL,
-  `user_id` bigint(20) unsigned DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `payload` longtext NOT NULL,
-  `last_activity` int(11) NOT NULL,
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sessions_user_id_index` (`user_id`),
   KEY `sessions_last_activity_index` (`last_activity`)
@@ -242,13 +254,13 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 -- Dumping structure for table posmia.users
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` bigint(20) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` bigint unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -261,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table posmia.users: ~2 rows (approximately)
 INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
 	(7, 1, 'Mia Sumiati', 'miasumiati@gmail.com', NULL, '$2y$12$PEC1zRPiW..blqxYsmbXo.vTgZyALpH5l06nkEIysKV0PR7WrSflW', NULL, '2026-08-31 03:00:56', '2026-08-31 03:00:56'),
-	(10, 2, 'Citra', 'inong@gmail.com', NULL, '$2y$12$ufov/OW0MFBVa7L9KTqQOOw1yemYHjeU.IretwrzzTbbmFSJICj8S', NULL, '2026-09-03 04:08:28', '2026-09-03 04:08:28');
+	(10, 2, 'Citra', 'inong@gmail.com', NULL, '$2y$12$S/QRTHa80bKz0bxYfeflpuH2kfMMZ2ojM9wMAp8k2Ju1YG6fZRKMS', NULL, '2026-09-03 04:08:28', '2026-09-09 03:04:01');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
