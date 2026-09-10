@@ -31,7 +31,7 @@
     ">
 
 <div class="card text-center position-absolute top-50 start-50 translate-middle" style="width: 18rem; background-color: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 24px; overflow: hidden;">
-  <h5 class="card-header" style="color: #fff">Point Of Sale</h5>
+  <h5 class="card-header" style="color: #fff">Ruang Gaya</h5>
   <div class="card-body">
 
   <form action="{{ route('auth') }}" method="POST">
