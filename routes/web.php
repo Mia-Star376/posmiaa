@@ -28,11 +28,16 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:admin,kasir')->group(function () {
-        Route::resource('/produk', ProdukController::class);
-        Route::resource('jenis', JenisController::class)->parameters([
-    'jenis' => 'jenis'
-]);
-        Route::resource('/penjualan', PenjualanController::class);
-        Route::resource('/itempenjualan', ItemPenjualanController::class);
-    });
+    Route::resource('/produk', ProdukController::class);
+    Route::resource('jenis', JenisController::class)->parameters([
+        'jenis' => 'jenis'
+    ]);
+
+    Route::get('/about', function () {
+        return view('about');
+    })->name('about');
+
+    Route::resource('/penjualan', PenjualanController::class);
+    Route::resource('/itempenjualan', ItemPenjualanController::class);
+});
 });

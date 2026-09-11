@@ -70,7 +70,7 @@
                                 <form action="{{ route('produk.destroy', $product) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-danger" style="background-color: #d94f83; border-color: #d94f83; color: #fff;" onclick="return confirm('Apakah anda yakin akan menghapus produk ini?')">
+                                    <button type="button" class="btn btn-sm btn-danger" style="background-color: #d94f83; border-color: #d94f83; color: #fff;" onclick="return tampilkanHapusProduk(event)">
                                         Hapus
                                     </button>
                                 </form>
@@ -95,5 +95,51 @@
         </div>
 
     </div>
+
+    {{-- ================== MODAL KONFIRMASI HAPUS PRODUK ================== --}}
+    <div id="modalHapusProduk" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+
+            <div style="padding:28px 24px 8px;">
+                <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:6px;">Hapus produk ini?</div>
+                <div style="font-size:13px; color:#999;">Data produk akan dihapus permanen dan tidak bisa dikembalikan.</div>
+            </div>
+
+            <div style="padding:20px 24px 24px; display:flex; gap:10px;">
+                <button type="button" onclick="tutupHapusProduk()"
+                    style="flex:1; background:#fff; border:1px solid #f0b8cc; color:#993556; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Tidak
+                </button>
+                <button type="button" onclick="lanjutkanHapusProduk()"
+                    style="flex:1; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Ya, Hapus
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let formHapusProdukRef = null;
+
+        function tampilkanHapusProduk(e) {
+            e.preventDefault();
+            formHapusProdukRef = e.target.closest('form');
+            document.getElementById('modalHapusProduk').style.display = 'flex';
+            return false;
+        }
+
+        function tutupHapusProduk() {
+            document.getElementById('modalHapusProduk').style.display = 'none';
+            formHapusProdukRef = null;
+        }
+
+        function lanjutkanHapusProduk() {
+            document.getElementById('modalHapusProduk').style.display = 'none';
+            if (formHapusProdukRef) {
+                formHapusProdukRef.submit();
+            }
+        }
+    </script>
 
 @endsection

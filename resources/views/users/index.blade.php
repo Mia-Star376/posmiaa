@@ -53,7 +53,7 @@
                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm" style="background-color: #d94f83; border-color: #d94f83; color: #fff;" onclick="return confirm('Yakin hapus user ini?')">
+                                    <button type="button" class="btn btn-sm" style="background-color: #d94f83; border-color: #d94f83; color: #fff;" onclick="return tampilkanHapusUser(event)">
                                         Hapus
                                     </button>
                                 </form>
@@ -77,5 +77,51 @@
         </div>
 
     </div>
+
+    {{-- ================== MODAL KONFIRMASI HAPUS USER ================== --}}
+    <div id="modalHapusUser" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+
+            <div style="padding:28px 24px 8px;">
+                <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:6px;">Hapus user ini?</div>
+                <div style="font-size:13px; color:#999;">Data user akan dihapus permanen dan tidak bisa dikembalikan.</div>
+            </div>
+
+            <div style="padding:20px 24px 24px; display:flex; gap:10px;">
+                <button type="button" onclick="tutupHapusUser()"
+                    style="flex:1; background:#fff; border:1px solid #f0b8cc; color:#993556; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Tidak
+                </button>
+                <button type="button" onclick="lanjutkanHapusUser()"
+                    style="flex:1; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Ya, Hapus
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let formHapusRef = null;
+
+        function tampilkanHapusUser(e) {
+            e.preventDefault();
+            formHapusRef = e.target.closest('form');
+            document.getElementById('modalHapusUser').style.display = 'flex';
+            return false;
+        }
+
+        function tutupHapusUser() {
+            document.getElementById('modalHapusUser').style.display = 'none';
+            formHapusRef = null;
+        }
+
+        function lanjutkanHapusUser() {
+            document.getElementById('modalHapusUser').style.display = 'none';
+            if (formHapusRef) {
+                formHapusRef.submit();
+            }
+        }
+    </script>
 
 @endsection

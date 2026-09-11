@@ -113,7 +113,7 @@
 
                     <strong class="d-block mb-2">Rp {{ number_format($sale->total_pembayaran) }}</strong>
 
-                    <form method="POST"
+                    <form id="formCheckout" method="POST"
                           action="{{ route('penjualan.update', $sale->id) }}"
                           onsubmit="return sebelumCheckout(event)" class="mb-2">
                         @csrf
@@ -157,9 +157,9 @@
                     </form>
 
                     @can('delete', $sale)
-                    <form action="{{ route('penjualan.destroy', $sale->id) }}"
+                    <form id="formBatal" action="{{ route('penjualan.destroy', $sale->id) }}"
                           method="POST"
-                          onsubmit="return confirm('Apakah Anda yakin ingin membatalkan transaksi ini?')">
+                          onsubmit="return tampilkanKonfirmasiBatal(event)">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-produk w-100 {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}">
@@ -173,6 +173,67 @@
 
         </div>
 
+    </div>
+
+    {{-- ================== MODAL ALERT (pengganti alert()) ================== --}}
+    <div id="modalAlert" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1070;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:300px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+            <div style="padding:26px 22px 6px;">
+                <div id="alertMessage" style="font-size:14px; color:#2a2a2a; font-weight:600;"></div>
+            </div>
+            <div style="padding:18px 22px 22px;">
+                <button type="button" onclick="tutupAlert()"
+                    style="width:100%; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- ================== MODAL KONFIRMASI CHECKOUT ================== --}}
+    <div id="modalKonfirmasi" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+
+            <div style="padding:28px 24px 8px;">
+                <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:6px;">Yakin ingin checkout?</div>
+                <div style="font-size:13px; color:#999;">Transaksi akan diselesaikan dan tidak bisa diubah lagi.</div>
+            </div>
+
+            <div style="padding:20px 24px 24px; display:flex; gap:10px;">
+                <button type="button" onclick="batalKonfirmasi()"
+                    style="flex:1; background:#fff; border:1px solid #f0b8cc; color:#993556; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Batal
+                </button>
+                <button type="button" onclick="lanjutkanCheckout()"
+                    style="flex:1; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Ya, Checkout
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- ================== MODAL KONFIRMASI BATAL TRANSAKSI ================== --}}
+    <div id="modalKonfirmasiBatal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+
+            <div style="padding:28px 24px 8px;">
+                <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:6px;">Batalkan transaksi ini?</div>
+                <div style="font-size:13px; color:#999;">Semua item di keranjang akan dihapus.</div>
+            </div>
+
+            <div style="padding:20px 24px 24px; display:flex; gap:10px;">
+                <button type="button" onclick="tutupKonfirmasiBatal()"
+                    style="flex:1; background:#fff; border:1px solid #f0b8cc; color:#993556; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Tidak
+                </button>
+                <button type="button" onclick="lanjutkanBatal()"
+    style="flex:1; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+    Ya, Batalkan
+</button>
+            </div>
+
+        </div>
     </div>
 
 <style>
@@ -199,6 +260,7 @@
 <script>
     const totalBelanja = {{ $sale->total_pembayaran }};
 
+    // ============ TOGGLE METODE PEMBAYARAN ============
     function toggleMetode() {
         const metode = document.getElementById('paymentMethod').value;
         document.getElementById('cashBox').style.display = 'none';
@@ -230,25 +292,62 @@
         }
     }
 
+    // ============ MODAL ALERT (pengganti alert()) ============
+    function tampilkanAlert(pesan) {
+        document.getElementById('alertMessage').innerText = pesan;
+        document.getElementById('modalAlert').style.display = 'flex';
+    }
+
+    function tutupAlert() {
+        document.getElementById('modalAlert').style.display = 'none';
+    }
+
+    // ============ CHECKOUT (pengganti confirm()) ============
     function sebelumCheckout(e) {
+        e.preventDefault();
+
         const metode = document.getElementById('paymentMethod').value;
 
         if (!metode) {
-            alert('Pilih metode pembayaran dulu');
-            e.preventDefault();
+            tampilkanAlert('Pilih metode pembayaran dulu');
             return false;
         }
 
         if (metode === 'CASH') {
             const diterima = parseFloat(document.getElementById('uangDiterima').value) || 0;
             if (diterima < totalBelanja) {
-                alert('Uang diterima kurang dari total belanja');
-                e.preventDefault();
+                tampilkanAlert('Uang diterima kurang dari total belanja');
                 return false;
             }
         }
 
-        return confirm('Yakin ingin checkout?');
+        document.getElementById('modalKonfirmasi').style.display = 'flex';
+        return false;
+    }
+
+    function batalKonfirmasi() {
+        document.getElementById('modalKonfirmasi').style.display = 'none';
+    }
+
+    function lanjutkanCheckout() {
+        document.getElementById('modalKonfirmasi').style.display = 'none';
+        document.getElementById('formCheckout').submit();
+    }
+
+    // ============ BATAL TRANSAKSI (pengganti confirm()) ============
+    function tampilkanKonfirmasiBatal(e) {
+        e.preventDefault();
+        document.getElementById('modalKonfirmasiBatal').style.display = 'flex';
+        return false;
+    }
+
+    function tutupKonfirmasiBatal() {
+        document.getElementById('modalKonfirmasiBatal').style.display = 'none';
+    }
+
+    function lanjutkanBatal() {
+        document.getElementById('modalKonfirmasiBatal').style.display = 'none';
+        document.getElementById('formBatal').submit();
     }
 </script>
 

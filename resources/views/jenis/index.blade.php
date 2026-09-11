@@ -50,11 +50,10 @@
                         <td class="text-center">
                             @if(auth()->user()->role_id === 1)
                                 <a href="{{ route('jenis.edit', $j->id) }}" class="btn btn-pink btn-sm">Edit</a>
-                                <form action="{{ route('jenis.destroy', $j->id) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Yakin hapus jenis ini?')">
+                                <form action="{{ route('jenis.destroy', $j->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-pink-dark btn-sm">Hapus</button>
+                                    <button type="button" class="btn btn-pink-dark btn-sm" onclick="return tampilkanHapusJenis(event)">Hapus</button>
                                 </form>
                             @else
                                 -
@@ -73,6 +72,29 @@
             {{ $jenis->links() }}
         </div>
 
+    </div>
+
+    {{-- ================== MODAL KONFIRMASI HAPUS JENIS ================== --}}
+    <div id="modalHapusJenis" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:12px; padding:0; width:320px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); text-align:center;">
+
+            <div style="padding:28px 24px 8px;">
+                <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:6px;">Hapus jenis ini?</div>
+                <div style="font-size:13px; color:#999;">Data jenis akan dihapus permanen dan tidak bisa dikembalikan.</div>
+            </div>
+
+            <div style="padding:20px 24px 24px; display:flex; gap:10px;">
+                <button type="button" onclick="tutupHapusJenis()"
+                    style="flex:1; background:#fff; border:1px solid #f0b8cc; color:#993556; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Tidak
+                </button>
+                <button type="button" onclick="lanjutkanHapusJenis()"
+                    style="flex:1; background:#d4537e; border:none; color:#fff; padding:10px; border-radius:8px; font-weight:600; cursor:pointer;">
+                    Ya, Hapus
+                </button>
+            </div>
+
+        </div>
     </div>
 
 <style>
@@ -97,5 +119,28 @@
         color: #fff;
     }
 </style>
+
+<script>
+    let formHapusJenisRef = null;
+
+    function tampilkanHapusJenis(e) {
+        e.preventDefault();
+        formHapusJenisRef = e.target.closest('form');
+        document.getElementById('modalHapusJenis').style.display = 'flex';
+        return false;
+    }
+
+    function tutupHapusJenis() {
+        document.getElementById('modalHapusJenis').style.display = 'none';
+        formHapusJenisRef = null;
+    }
+
+    function lanjutkanHapusJenis() {
+        document.getElementById('modalHapusJenis').style.display = 'none';
+        if (formHapusJenisRef) {
+            formHapusJenisRef.submit();
+        }
+    }
+</script>
 
 @endsection
