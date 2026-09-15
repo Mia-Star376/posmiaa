@@ -24,7 +24,7 @@
           <a class="nav-link {{ Request::is('penjualan') ? 'active fw-semibold' : '' }}" href="{{ route('penjualan.index') }}" style="{{ Request::is('penjualan') ? 'color: #d94f83;' : '' }}">Penjualan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ Request::is('about') ? 'active fw-semibold' : '' }}" href="{{ route('about') }}" style="{{ Request::is('about') ? 'color: #d94f83;' : '' }}"></a>
+          <a class="nav-link {{ Request::is('about') ? 'active fw-semibold' : '' }}" href="{{ route('about') }}" style="{{ Request::is('about') ? 'color: #d94f83;' : '' }}">Tentang</a>
         </li>
       </ul>
       <form action="{{ route('logout') }}" method="POST" class="mb-0">

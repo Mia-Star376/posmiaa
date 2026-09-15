@@ -6,22 +6,31 @@
 
 @include('layouts.navbar')
 
-    <div class="container-fluid py-4 px-4 d-flex align-items-center justify-content-center" style="min-height: 75vh;">
+    <div class="container-fluid py-4 px-4">
 
-        <div class="row justify-content-center w-100">
-            <div class="col-lg-8">
+        <h4 class="mb-5 text-center">Tentang Kami</h4>
 
-                <h4 class="mb-4 text-center">Tentang</h4>
+        <div class="border rounded p-4 bg-white">
 
-                <div class="border rounded p-4 bg-white mb-4">
-                    <p class="mb-0 text-center">
-                        Halo, perkenalkan saya Mia Sumiyati, siswi di SMKN 4 Tasikmalaya. Saya membuat aplikasi Ruang Gaya - Point of Sale ini sebagai proyek tugas akhir. Ruang Gaya - POS adalah aplikasi kasir digital sekaligus sistem pendataan produk yang membantu proses pencatatan transaksi penjualan dan pengelolaan data produk secara lebih cepat, rapi, dan terkomputerisasi, dibangun menggunakan Laravel sebagai framework PHP, MySQL sebagai basis data, Bootstrap untuk tampilan antarmuka, serta JavaScript untuk interaksi dinamis seperti modal konfirmasi dan kalkulasi kembalian otomatis. Aplikasi ini memiliki dua peran pengguna: Admin, yang memiliki akses penuh untuk mengelola data pengguna (users), data jenis produk (kategori), serta menambah/mengubah/menghapus data produk, dan memantau ringkasan penjualan dan laporan transaksi harian melalui dashboard; dan Kasir, yang bertugas memproses transaksi penjualan sehari-hari mulai dari memilih produk, mengatur keranjang belanja, hingga melakukan checkout dengan metode pembayaran Cash atau QRIS, tanpa memiliki akses untuk mengubah data pengguna, jenis produk, maupun data produk. Aplikasi ini dibuat dengan tujuan menerapkan ilmu pengembangan web, khususnya Laravel, ke dalam sebuah studi kasus nyata, yaitu sistem Point of Sale untuk usaha kecil/menengah, sekaligus melatih kemampuan merancang alur transaksi yang efisien dan ramah pengguna. Semoga aplikasi Ruang Gaya - Point of Sale ini dapat terus dikembangkan lebih lanjut, baik dari sisi fitur seperti laporan keuangan, integrasi pembayaran QRIS yang sesungguhnya, dan cetak struk otomatis, maupun dari sisi tampilan, sehingga bisa benar-benar bermanfaat bagi pengguna yang menjalankan usahanya.
-                    </p>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <p>Halo, Sahabat Gaya! <br><br>
 
-            </div>
+                    Selamat datang di Ruang Gaya, tempat di mana kreativitas dan gaya berpadu menjadi satu untuk menghadirkan penampilan terbaik versi dirimu. Kami percaya bahwa fashion bukan sekadar soal mengikuti tren, tetapi juga cara untuk mengekspresikan diri dan menunjukkan karakter yang unik dari setiap individu.
+
+                    Di Ruang Gaya, kami menghadirkan beragam koleksi produk fashion pilihan mulai dari pakaian hingga sepatu, dengan desain yang unik, menarik, dan selalu mengikuti perkembangan gaya masa kini. Setiap produk yang kami tawarkan dipilih dengan cermat agar dapat memenuhi kebutuhan gaya berbusana pelanggan, baik untuk tampilan kasual sehari-hari maupun acara-acara spesial.
+
+                    Kami memahami bahwa kepuasan pelanggan adalah kunci utama dalam membangun kepercayaan. Oleh karena itu, kami senantiasa berkomitmen untuk memberikan pelayanan terbaik, mulai dari kualitas produk, kemudahan berbelanja, hingga pengalaman yang menyenangkan bagi setiap pelanggan yang berkunjung ke toko kami. <br><br>
+
+                    Ruang Gaya berlokasi di Jl. K.H Tubagus Abdullah, Tasikmalaya, dan siap menyambut kamu yang ingin tampil percaya diri dengan gaya yang autentik. Kami akan terus berinovasi dan menghadirkan koleksi-koleksi terbaru agar kamu selalu punya pilihan gaya yang segar dan menarik.
+
+                    Terima kasih telah meluangkan waktu untuk mengunjungi Ruang Gaya. Kami tunggu kehadiranmu untuk menemukan gaya terbaikmu bersama kami!</p>
+
+                    <div class=" mb-4">
+            <img src="{{ asset('images/logo.svg') }}" alt="Ruang Gaya" style="max-width: 280px; width: 100%; height: auto;">
         </div>
+            </div>
 
+        </div>
     </div>
 
 @endsection
