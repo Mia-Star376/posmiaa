@@ -19,17 +19,28 @@
                 <span></span>
                 @endcan
 
-                <form action="{{ route('produk.index') }}" method="GET" class="d-flex" style="max-width: 350px; width: 100%;">
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        class="form-control form-control-sm"
-                        placeholder="Search nama produk...">
-                    <button class="btn btn-outline-secondary btn-sm ms-2" type="submit">
-                        Search
-                    </button>
-                </form>
+                <form action="{{ route('produk.index') }}" method="GET" class="d-flex flex-nowrap align-items-center gap-2" style="max-width: 550px; width: 100%;">
+    <input
+        type="text"
+        name="search"
+        value="{{ request('search') }}"
+        class="form-control form-control-sm"
+        placeholder="Search nama produk..."
+        style="min-width: 150px;">
+
+    <select name="jenis_id" class="form-select form-select-sm" style="width: 140px; flex-shrink: 0;">
+        <option value="">Semua Jenis</option>
+        @foreach ($jenisList as $j)
+            <option value="{{ $j->id }}" {{ (string) request('jenis_id') === (string) $j->id ? 'selected' : '' }}>
+                {{ $j->nama_jenis }}
+            </option>
+        @endforeach
+    </select>
+
+    <button class="btn btn-outline-secondary btn-sm" type="submit" style="flex-shrink: 0;">
+        Search
+    </button>
+</form>
             </div>
 
             <div class="rounded-3 overflow-hidden border">

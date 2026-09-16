@@ -21,21 +21,27 @@ class ProdukController extends Controller
 {
     $this->authorize('viewAny', Produk::class);
 
-    $keyword = $request->input('search');
+    $keyword  = $request->input('search');
+    $jenisId  = $request->input('jenis_id');
 
-    if ($keyword) {
-        $products = Produk::with('jenis')
+    $products = Produk::with('jenis')
         ->when($keyword, function ($query) use ($keyword) {
             $query->where('nama', 'like', '%' . $keyword . '%');
         })
-        ->orderBy('nama')
+        ->when($jenisId, function ($query) use ($jenisId) {
+            $query->where('jenis_id', $jenisId);
+        })
+        ->when($keyword, function ($query) {
+            $query->orderBy('nama');
+        }, function ($query) {
+            $query->oldest();
+        })
         ->paginate(10)
         ->withQueryString();
-    } else {
-        $products = Produk::with('jenis')->oldest()->paginate(10)->withQueryString();
-    }
 
-    return view('produk.index', compact('products'));
+    $jenisList = Jenis::orderBy('nama_jenis')->get();
+
+    return view('produk.index', compact('products', 'jenisList'));
 }
 
     /**

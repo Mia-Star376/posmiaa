@@ -44,6 +44,16 @@
                     </thead>
                     <tbody>
                         @forelse($sales as $sale)
+                        @php
+                            $itemsForModal = [];
+                            foreach ($sale->itemPenjualan as $i) {
+                                $itemsForModal[] = [
+                                    'nama' => $i->produk->nama ?? 'Produk dihapus',
+                                    'kuantitas' => $i->kuantitas,
+                                    'subtotal' => number_format($i->subtotal),
+                                ];
+                            }
+                        @endphp
                         <tr>
                             <td>{{ $sales->firstItem() + $loop->index }}</td>
                             <td>{{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}</td>
@@ -53,24 +63,24 @@
                             <td>{{ $sale->status }}</td>
                             <td class="text-center">
                                 <a href="#" class="btn btn-sm" style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;"
-                                   onclick="return tampilkanDetail(
-                                       '{{ $sale->id }}',
-                                       '{{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}',
-                                       '{{ $sale->user->name }}',
-                                       '{{ number_format($sale->total_pembayaran) }}',
-                                       '{{ $sale->metode_pembayaran }}',
-                                       '{{ $sale->status }}',
-                                       '{{ number_format($sale->uang_diterima ?? 0) }}',
-                                       '{{ number_format($sale->kembalian ?? 0) }}'
-                                   )">Detail</a>
+                                   data-id="{{ $sale->id }}"
+                                   data-tanggal="{{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}"
+                                   data-kasir="{{ $sale->user->name }}"
+                                   data-total="{{ number_format($sale->total_pembayaran) }}"
+                                   data-metode="{{ $sale->metode_pembayaran }}"
+                                   data-status="{{ $sale->status }}"
+                                   data-uang-diterima="{{ number_format($sale->uang_diterima ?? 0) }}"
+                                   data-kembalian="{{ number_format($sale->kembalian ?? 0) }}"
+                                   data-items='{{ json_encode($itemsForModal) }}'
+                                   onclick="return tampilkanDetail(this)">Detail</a>
                                 @can('view', $sale)
                                 <a href="{{ route('penjualan.edit', $sale) }}" class="btn btn-sm" style="background-color: #db648a; border-color: #db648a; color: #fff;">Edit</a>
                                 @endcan
                                 @can('delete', $sale)
-                                <form action="{{ route('penjualan.destroy', $sale->id) }}" method="POST" class="d-inline">
+                                <form id="deleteForm-{{ $sale->id }}" action="{{ route('penjualan.destroy', $sale->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm" style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;" onclick="return confirm('Apakah anda yakin akan menghapus penjualan ini?')">
+                                    <button type="button" class="btn btn-sm" style="background-color: #ff8fb3; border-color: #ff8fb3; color: #fff;" onclick="tampilkanHapus('{{ $sale->id }}')">
                                         Hapus
                                     </button>
                                 </form>
@@ -97,7 +107,7 @@
     </div>
 
     <div id="modalDetail" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1050;">
-    <div style="background:#fffdf8; border-radius:4px; padding:0; width:300px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); font-family:'Courier New', Consolas, monospace;">
+    <div style="background:#fffdf8; border-radius:4px; padding:0; width:300px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.25); font-family:'Courier New', Consolas, monospace; max-height:90vh; overflow-y:auto;">
 
         <div style="padding:20px 20px 4px; text-align:center;">
             <div style="font-size:15px; font-weight:700; letter-spacing:2px; color:#2a2a2a;">POINT OF SALE</div>
@@ -123,14 +133,24 @@
                 </tr>
             </table>
 
+            <hr style="border:none; border-top:1.5px dashed #f0b8cc; margin:10px 0;">
+
+            <!-- Daftar Produk -->
+            <div style="font-size:10px; color:#999; letter-spacing:1px; margin-bottom:4px;">PRODUK</div>
+            <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                <tbody id="dItemsList"></tbody>
+            </table>
+
+            <hr style="border:none; border-top:1.5px dashed #f0b8cc; margin:10px 0;">
+
             <!-- Box QRIS -->
-            <div id="dQrisBox" style="display:none; text-align:center; margin-top:12px;">
+            <div id="dQrisBox" style="display:none; text-align:center; margin-top:4px;">
                 <img id="dQrisImg" src="" alt="QRIS" style="width:120px; height:120px; border:1px solid #f0b8cc; padding:6px; border-radius:4px;">
                 <div style="font-size:10px; color:#999; letter-spacing:1px; margin-top:4px;">SCAN QRIS</div>
             </div>
 
             <!-- Box Cash -->
-            <div id="dCashBox" style="display:none; margin-top:12px; background:#fbeef3; border-radius:4px; padding:10px 12px;">
+            <div id="dCashBox" style="display:none; margin-top:4px; background:#fbeef3; border-radius:4px; padding:10px 12px;">
                 <div style="display:flex; justify-content:space-between; font-size:12px; color:#666;">
                     <span>Uang Diterima</span>
                     <span id="dUangDiterima" style="font-weight:700; color:#2a2a2a;"></span>
@@ -156,17 +176,30 @@
     </div>
 </div>
 
+    <div id="modalHapus" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:1060;">
+        <div style="background:#fffdf8; border-radius:8px; padding:28px 24px; width:320px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+            <div style="font-size:16px; font-weight:700; color:#2a2a2a; margin-bottom:8px;">Hapus penjualan ini?</div>
+            <div style="font-size:13px; color:#888; margin-bottom:22px;">Data penjualan akan dihapus permanen dan tidak bisa dikembalikan.</div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="tutupHapus()" style="flex:1; background:#fff; border:1px solid #eab8c8; color:#d4537e; padding:9px; border-radius:5px; font-size:13px; font-weight:600; cursor:pointer;">Tidak</button>
+                <button onclick="konfirmasiHapus()" style="flex:1; background:#d4537e; border:none; color:#fff; padding:9px; border-radius:5px; font-size:13px; font-weight:600; cursor:pointer;">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
 <script>
-    function tampilkanDetail(id, tanggal, kasir, total, metode, status, uangDiterima, kembalian) {
-        document.getElementById('dId').innerText = id;
-        document.getElementById('dTanggal').innerText = tanggal;
-        document.getElementById('dKasir').innerText = kasir;
-        document.getElementById('dTotal').innerText = total;
-        document.getElementById('dMetode').innerText = metode;
+    function tampilkanDetail(btn) {
+        const d = btn.dataset;
+
+        document.getElementById('dId').innerText = d.id;
+        document.getElementById('dTanggal').innerText = d.tanggal;
+        document.getElementById('dKasir').innerText = d.kasir;
+        document.getElementById('dTotal').innerText = d.total;
+        document.getElementById('dMetode').innerText = d.metode;
 
         const statusEl = document.getElementById('dStatus');
-        statusEl.innerText = status;
-        if (status === 'COMPLETED') {
+        statusEl.innerText = d.status;
+        if (d.status === 'COMPLETED') {
             statusEl.style.background = '#e3f9e5';
             statusEl.style.color = '#1f9d55';
             statusEl.style.border = '1px solid #1f9d55';
@@ -176,24 +209,62 @@
             statusEl.style.border = '1px solid #a67a12';
         }
 
+        // Daftar produk
+        let items = [];
+        try {
+            items = JSON.parse(d.items || '[]');
+        } catch (e) {
+            items = [];
+        }
+
+        const listEl = document.getElementById('dItemsList');
+        if (items.length > 0) {
+            listEl.innerHTML = items.map(item => `
+                <tr>
+                    <td style="padding:3px 0; color:#2a2a2a;">${item.nama} <span style="color:#999;">x${item.kuantitas}</span></td>
+                    <td style="padding:3px 0; text-align:right; font-weight:700; color:#2a2a2a;">Rp${item.subtotal}</td>
+                </tr>
+            `).join('');
+        } else {
+            listEl.innerHTML = '<tr><td style="padding:3px 0; color:#999;">Tidak ada produk.</td></tr>';
+        }
+
         const qrisBox = document.getElementById('dQrisBox');
         const cashBox = document.getElementById('dCashBox');
         qrisBox.style.display = 'none';
         cashBox.style.display = 'none';
 
-        if (metode === 'QRIS') {
-            const isiQr = 'TRX-' + id + '|' + total;
+        if (d.metode === 'QRIS') {
+            const isiQr = 'TRX-' + d.id + '|' + d.total;
             document.getElementById('dQrisImg').src =
                 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(isiQr);
             qrisBox.style.display = 'block';
-        } else if (metode === 'CASH') {
-            document.getElementById('dUangDiterima').innerText = 'Rp ' + uangDiterima;
-            document.getElementById('dKembalian').innerText = 'Rp ' + kembalian;
+        } else if (d.metode === 'CASH') {
+            document.getElementById('dUangDiterima').innerText = 'Rp ' + d.uangDiterima;
+            document.getElementById('dKembalian').innerText = 'Rp ' + d.kembalian;
             cashBox.style.display = 'block';
         }
 
         document.getElementById('modalDetail').style.display = 'flex';
         return false;
+    }
+
+    let idHapusSekarang = null;
+
+    function tampilkanHapus(id) {
+        idHapusSekarang = id;
+        document.getElementById('modalHapus').style.display = 'flex';
+    }
+
+    function tutupHapus() {
+        idHapusSekarang = null;
+        document.getElementById('modalHapus').style.display = 'none';
+    }
+
+    function konfirmasiHapus() {
+        if (idHapusSekarang) {
+            document.getElementById('deleteForm-' + idHapusSekarang).submit();
+        }
     }
 </script>
 
